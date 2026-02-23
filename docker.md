@@ -21,20 +21,20 @@ What is Docker?
 Components of Docker:
 
  - Docker Engine:
-  - It enables Docker to run containers on a system. 
-  - It follows a client-server architecture and is responsible for building, running, and managing Docker containers.
-  - Docker Server runs in the background, listening to API requests and managing objects like images, containers, networks, and volumes.
-  - The Docker Client (docker CLI) communicates with the daemon using a REST API. 
-  - Docker Client provides the execution environment where Docker Images are instantiated into live containers.
+	  - It enables Docker to run containers on a system. 
+	  - It follows a client-server architecture and is responsible for building, running, and managing Docker containers.
+	  - Docker Server runs in the background, listening to API requests and managing objects like images, containers, networks, and volumes.
+	  - The Docker Client (docker CLI) communicates with the daemon using a REST API. 
+	  - Docker Client provides the execution environment where Docker Images are instantiated into live containers.
 
  - Docker Image: 
-  - It is a template that is used for creating containers, containing the application code and dependencies.
-  - It contains instructions to build Docker image.
-  - Application dependencies specified in Dockerfile.
-  - The name must be Dockerfile.
+	  - It is a template that is used for creating containers, containing the application code and dependencies.
+	  - It contains instructions to build Docker image.
+	  - Application dependencies specified in Dockerfile.
+	  - The name must be Dockerfile.
 
  - Docker Registry : It is a storage distribution system for docker images, where you can store the images in both public and private modes. 
- - Ex: Docker Hub, ECR
+ 	- Ex: Docker Hub, ECR
 
  - Dockerfile: It is a file that describes the steps to create an image quickly.
 
@@ -45,34 +45,34 @@ Docker Installation:
  - Follow the instructions:
 	https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-docker.html
 
-sudo yum update -y
-sudo yum install docker -y
-sudo systemctl status docker
-sudo systemctl start docker
-sudo systemctl enable docker
-sudo systemctl status docker
-sudo usermod -a -G docker ec2-user
-	Add the ec2-user to the docker group so that you can run Docker commands without using sudo.
+ - sudo yum update -y
+ - sudo yum install docker -y
+ - sudo systemctl status docker
+ - sudo systemctl start docker
+ - sudo systemctl enable docker
+ - sudo systemctl status docker
+ - sudo usermod -a -G docker ec2-user
+	 - Add the ec2-user to the docker group so that you can run Docker commands without using sudo.
 log out and log back in again.
 
-docker -v		-> Check Docker Version
-docker info		-> Displays system wide information regarding the Docker installation.
+ - docker -v		-> Check Docker Version
+ - docker info		-> Displays system wide information regarding the Docker installation.
 
-Hello World Example:
+ - Hello World Example:
 
 docker run hello-world
 	- checks for hello-world image in local rgistry
 	- if found, it will create a container
 	- if not found, it will download the image from docker hub and then create a container
 
-docker pull image_name 		-> download the image from docker registry to local registry - https://hub.docker.com/
-docker images				-> to show all images in local rgistry
-docker run image_name		-> pull the image if it is not available, run the image to form a container
-docker ps 					-> To show all running containers
-docker ps -a 				-> To show all running and stopped containers
-docker stop cnt_id/cnt_name -> To stop a container
-docker start cnt_id/cnt_nm	-> To start a container
-docker rmi img_name			-> To remove an image, it should not be in running condition
+ - docker pull image_name 		-> download the image from docker registry to local registry - https://hub.docker.com/
+ - docker images				-> to show all images in local rgistry
+ - docker run image_name		-> pull the image if it is not available, run the image to form a container
+ - docker ps 					-> To show all running containers
+ - docker ps -a 				-> To show all running and stopped containers
+ - docker stop cnt_id/cnt_name -> To stop a container
+ - docker start cnt_id/cnt_nm	-> To start a container
+ - docker rmi img_name			-> To remove an image, it should not be in running condition
 							-> If image is latest, only image name is fine, if any version will be there, then provide the version
 							-> ex: docker rmi centos:7
 							-> We can use image id directly also.
