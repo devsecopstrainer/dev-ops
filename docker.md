@@ -1,4 +1,6 @@
 Before Docker:
+============================
+
  - In physical machine -> we take hardware, install OS, then install the APP in it.
  - It will create issue if we install multiple versions of same software. Ex - Java 8 and 11, path setting issue.
  - Hardware utilization is not being done properly. If RAM will be 8 GB, and app will consume 1 GB of RAM, rest all waste.
@@ -8,6 +10,8 @@ Before Docker:
  - If we are not using the RAM also, the VM will take the RAM, use it or not.
 
 What is Docker?
+============================
+
  - An OS‑level virtualization platform.
  - OS‑level virtualization = containerization
  - Container is a lightweight OS.
@@ -19,6 +23,7 @@ What is Docker?
  - For monolithic app, hyper-v is OK, but for micro service, containers are suitable.
 
 Components of Docker:
+============================
 
  - Docker Engine:
 	  - It enables Docker to run containers on a system. 
@@ -29,6 +34,8 @@ Components of Docker:
 
  - Docker Image: 
 	  - It is a template that is used for creating containers, containing the application code and dependencies.
+
+ - Dockerfile: 
 	  - It contains instructions to build Docker image.
 	  - Application dependencies specified in Dockerfile.
 	  - The name must be Dockerfile.
@@ -36,7 +43,6 @@ Components of Docker:
  - Docker Registry : It is a storage distribution system for docker images, where you can store the images in both public and private modes. 
  	- Ex: Docker Hub, ECR
 
- - Dockerfile: It is a file that describes the steps to create an image quickly.
 
 Docker Installation:
 ============================
@@ -58,12 +64,17 @@ log out and log back in again.
  - docker -v		-> Check Docker Version
  - docker info		-> Displays system wide information regarding the Docker installation.
 
- - Hello World Example:
+
+ Hello World Example:
+ ============================
 
 docker run hello-world
 	- checks for hello-world image in local rgistry
 	- if found, it will create a container
 	- if not found, it will download the image from docker hub and then create a container
+
+Docker Commands
+============================
 
  - docker pull image_name 		-> download the image from docker registry to local registry - https://hub.docker.com/
  - docker images				-> to show all images in local rgistry
