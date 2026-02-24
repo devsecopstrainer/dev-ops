@@ -90,36 +90,36 @@ Docker Commands
 
 run commands:
 
-Ex1: docker run ubuntu
- - It downloads and runs an instance of ubuntu image and exits immediately.
- - This is because containers and not made to host OS, but to do a specific task on OS such as host a web server.
- - So, containers exit until the service under them are in running state.
+ - Ex1: docker run ubuntu
+ 	- It downloads and runs an instance of ubuntu image and exits immediately.
+ 	- This is because containers and not made to host OS, but to do a specific task on OS such as host a web server.
+	- So, containers exit until the service under them are in running state.
 
-Ex2: docker run -it ubuntu
+ - Ex2: docker run -it ubuntu
 	 - it - Interactive Terminal
 	 - We will go inside the container
 	 - exit -> to come out from the container
 
-Ex3: docker run -it ubuntu
+ - Ex3: docker run -it ubuntu
 	- come out from the container without stopping it, be in docker host.
 		 - 	Ctrl p q
 	- go inside the container again:
 	 - docker attach cnt_id
 
-Ex4: docker run -itd ubuntu
+ - Ex4: docker run -itd ubuntu
 	itd - Interactive Terminal Detached mode
 		- Go inside the container, attach the terminal, come out without stopping the container.
 		
-For stopped containers:
+ - For stopped containers:
 	1. start the container
 		 - docker start cnt_id
 	2. Go inside the container:
 		 - docker attach cnt_id
 		
-Ex-5: Give name to the container
+ - Ex-5: Give name to the container
 	 - docker run -it --name c2 ubuntu
 
-Ex-6: Port mapping
+ - Ex-6: Port mapping
 	- Run an NGINX container
  - docker run -it --name nginx-ex -p 8080:80 nginx
 
