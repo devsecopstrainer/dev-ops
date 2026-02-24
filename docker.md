@@ -123,3 +123,14 @@ run commands:
 	- Run an NGINX container
  - docker run -it --name nginx-ex -p 8080:80 nginx
 
+Dockerfile Keywords:
+=====================
+	 - # Comment
+	 - INSTRUCTION arguments
+
+	 - The instruction is not case-sensitive. However, convention is for them to be UPPERCASE to distinguish them from arguments more easily.
+	 - Docker runs instructions in a Dockerfile in order. A Dockerfile must begin with a FROM instruction.
+	 - The FROM instruction specifies the base image from which you are building.
+
+
+
