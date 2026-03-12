@@ -93,7 +93,7 @@ API Server:
  - etcd is the internal database of the K8S cluster which is used to store the request information.
  - etcd is a distributed key-value store that Kubernetes uses to share information about the overall state of a cluster. 
  - Additionally, nodes can refer to the global configuration data stored there to set themselves up whenever they are regenerated.
-    - 
+
 Scheduler
 =
  - Once the request gets stored in etcd, then scheduler schedules the pending tasks available in etcd.
