@@ -76,31 +76,11 @@ Nodes:
  - Just as pods collect individual containers that operate together, a node collects entire pods that function together. 
  - When you’re operating at scale, you want to be able to hand work over to a node whose pods are free to take it.
 
-K8S Architecture:
-=
- - K8S works based on clustered architecture.
- - Cluster means group of servers or machines connected all together in a single network.
- - A Kubernetes cluster consists of a control plane plus a set of worker machines, called nodes, that run containerized applications. 
- - K8S Cluster = Control Plane + Set of worker machines
- - Every cluster needs at least one worker node in order to run Pods.
- - K8S follows master slave architecture. It has:
-		Control Plane ( Master Node / Master Machine)
-		Worker machines = Nodes
-
-Control Plane:
-=
- - Itis the main entry point for administrators and users to manage the various nodes. 
- - Operations are issued to it either through HTTP calls or connecting to the machine and running command-line scripts. 
- - As the name implies, it controls how Kubernetes interacts with your applications.
-
-Worker Nodes:
-=
- - Worker nodes are the machines (virtual or physical) that run the containerized applications.
 
 Components of Control Plane:
 =
-	API Server:
-	=
+API Server:
+-
  - Inside the Control Plane API Server is available.
  - If we want to deploy some application in K8s, we can send the input to K8S via UI or via CLI which is kubectl.
  - Here API Server takes the incoming request and stores it in etcd.
@@ -114,8 +94,8 @@ Components of Control Plane:
  - etcd is a distributed key-value store that Kubernetes uses to share information about the overall state of a cluster. 
  - Additionally, nodes can refer to the global configuration data stored there to set themselves up whenever they are regenerated.
     - 
-	Scheduler:
-	=
+Scheduler
+=
  - Once the request gets stored in etcd, then scheduler schedules the pending tasks available in etcd.
  - The scheduler is responsible for assigning work to the various nodes. 
  - It checks which worker node is free and assigns task to that worker node.
