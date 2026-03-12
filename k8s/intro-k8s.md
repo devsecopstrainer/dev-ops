@@ -76,7 +76,6 @@ Nodes:
  - Just as pods collect individual containers that operate together, a node collects entire pods that function together. 
  - When you’re operating at scale, you want to be able to hand work over to a node whose pods are free to take it.
 
-
 Components of Control Plane:
 =
 API Server:
@@ -88,8 +87,8 @@ API Server:
  - The API server exposes a REST interface to the Kubernetes cluster. 
  - All operations against pods, services, and so forth, are executed programmatically by communicating with the endpoints provided by it.
 
-	etcd:
-	=
+etcd
+=
  - etcd is the internal database of the K8S cluster which is used to store the request information.
  - etcd is a distributed key-value store that Kubernetes uses to share information about the overall state of a cluster. 
  - Additionally, nodes can refer to the global configuration data stored there to set themselves up whenever they are regenerated.
@@ -102,8 +101,8 @@ Scheduler
  - In that worker node the application gets deployed as a pod.
  - It keeps watch over the resource capacity and ensures that a worker node’s performance is within an appropriate threshold.
     - 
-	Controller manager:
-	=
+Controller manager
+=
  - The controller-manager will monitor the functionality of all the K8S resources.
  - The controller-manager is responsible for making sure that the shared state of the cluster is operating as expected. 
  - More accurately, the controller manager oversees various controllers which respond to events (e.g., if a node goes down).
