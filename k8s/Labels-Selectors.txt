@@ -1,0 +1,74 @@
+Labels and Selectors:
+==================================
+ - Labels are any user-defined key-value pairs attached to objects (pods, nodes, services).
+ - Defined in metadata tag - yml file.
+ - Must be <= 63 characters, [a-z0-9A-Z]) with dashes (-), underscores (_), dots (.).
+ - Labels are paired with selectors to filter resources.
+ - Selectors allow K8S components to filter and identify a set of objects based on their labels.
+ - Via a label selector, the client/user can identify a set of objects.
+ - Supports two types of selectors: equality-based and set-based.
+ - Equality-based: =, !=
+ - Set-based requirement: in, notin
+ 
+Ex1: pod-ex-1.yml
+==========================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-ex1
+  labels:
+    env: development
+    app: nginx
+    server: web
+spec:
+  containers:
+    - name: ctnr-ex1
+      image: nginx:latest
+
+Ex2: pod-ex-2.yml
+==========================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-ex2
+  labels:
+    env: development
+    app: httpd
+    server: web
+spec:
+  containers:
+    - name: ctnr-ex2
+      image: httpd:latest
+
+
+Ex3: pod-ex-3.yml
+==========================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-ex3
+  labels:
+    env: development
+    app: nginx
+    server: web
+spec:
+  containers:
+    - name: ctnr-ex3
+      image: nginx:1.14.2
+
+
+
+Check the labels:
+	kubectl get pods --show-labels
+
+Equality-based Example:
+	get pods -l env=development
+
+Set-based Example:
+	kubectl get pods -l 'app in (nginx,httpd)'
+
+Updating labels - relabel existing pods:
+	kubectl label pods -l app=nginx dbserver=yes
+
+
+
