@@ -1,0 +1,36 @@
+Replication Controller, ReplicaSet, Deployment:
+===============================================
+- If pods crash, K8s won't autometically bring it back, so we need Replication Controller, ReplicaSet and Deployment.
+
+ReplicationController:
+======================
+ - Legacy API for managing workloads that can scale horizontally. Superseded by the Deployment and ReplicaSet APIs.
+ - A Deployment that configures a ReplicaSet is now the recommended way to set up replication.
+
+Ex:
+
+Replication Controller Ex:
+
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: rep-ctlr-ex
+spec:
+  replicas: 4
+  selector:
+    server: web
+  template:
+    metadata:
+      labels:
+        server: web
+    spec:
+      containers:
+        - name: ctnr-ex1
+          image: nginx:1.14.2
+
+
+kubectl apply -f rc.yml
+kubectl get rc
+kubectl describe rc
+kubectl delete rc rep-ctlr-ex
+
