@@ -1,0 +1,33 @@
+namespace:
+
+Provides virtual, isolated sub-clusters within a single physical cluster.
+Ideal for separating environments (development, staging, production).
+
+Create a namespace:
+	syntax:  kubectl create namespace <namespace-name>
+	example: kubectl create namespace dev
+
+List all namespaces:
+	kubectl get namespaces
+
+Create a pod in a namespace:
+	syntax:  kubectl apply -f <pod-definition-file.yaml> --namespace=<namespace-name>
+	example: kubectl apply -f pod-ex-1.yml --namespace sit	
+
+View pods in a specific namespace:
+	syntax:  kubectl get pods -n <namespace>: 
+	example: kubectl get pods -n dev
+
+Create namespace using yaml:
+
+# vi my-custom-namespace.yaml
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: SIT
+
+Delete namespace: 
+	syntax:  kubectl delete namespace <namespace-name>
+	example: kubectl delete namespace dev
+
