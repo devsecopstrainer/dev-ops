@@ -1,0 +1,76 @@
+
+Config Map:
+=======================================
+A ConfigMap is a Kubernetes API object used to store non-confidential data in key-value pairs, such as configuration files, hostnames, and URLs. 
+Its primary purpose is to decouple configuration data from application code, making container images more portable and easier to manage across different environments.
+Ex: Dev, SIT, UAT, PROD
+Data can be utilized via environment variables.
+Volume-mounted ConfigMaps can update without pod restarts, unlike environment variables, which often require them.
+
+user => yaml file => kubectl apply => config map will get created => API Server will store this in => etcd => in plain text key value format
+
+
+vi dep-ex-1.yml
+=================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-deployment
+  labels:
+    app-name: spring-boot-app
+spec: 
+  replicas: 2
+  selector:
+    matchLabels:
+      app-name: spring-boot-app
+  template:
+    metadata:
+      labels:
+        app-name: spring-boot-app
+    spec:
+      containers:
+        - name: sp-boot-cnt
+          image: devsecopstrainer/spring-boot-app:v1
+          env:
+            - name: server.servlet.context-path
+              valueFrom: 
+                configMapKeyRef:
+                  name: cm-1
+                  key: server.servlet.context-path
+          ports:
+            - containerPort: 8080
+
+
+vi svc-ex-1.yml
+=================================
+apiVersion: v1
+kind: Service
+metadata:
+    name: spring-boot-svc
+spec:
+    type: NodePort
+    selector:
+        app-name: spring-boot-app
+    ports:
+      - port: 8080
+        targetPort: 8080
+        nodePort: 30009
+
+
+vi cm-ex-1.yml
+==================================
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cm-1
+data:
+  server.servlet.context-path: "/test"
+
+
+
+kubectl apply -f cm-ex-1.yml
+kubectl get cm
+kubectl describe cm cm-1
+
+
