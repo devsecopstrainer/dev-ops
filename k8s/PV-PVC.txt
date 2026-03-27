@@ -1,0 +1,59 @@
+PV and PVC:
+=============================================================
+ - Take one example: one Pod is running and it is writing some contents to a file.
+ - If Pod crashes, new Pod will get created, but the data will get wiped out as it was there inside the Pod.
+ - So, we should not store data inside Pod.
+ - We should use EBS, EFS or Object Storage.
+ - K8S will help in connecting Pod with the storage.
+ - This storage is called a PV.
+ - A persistent volume is a registered storage inside K8S which is present outside of the node.
+ - Created cluster level, not Pod level.
+ - Creation os storage in cluster level is PV.
+ - When a Pod will request for the volume, it is called as persistent volume claim - PVC.
+ - Pod > PVC > PV > Real Storage
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: example-pv # Name of the Persistent Volume
+spec:
+  capacity:
+    storage: 1Gi # Specifies the total storage capacity for every PVC
+  accessModes:
+    - ReadWriteOnce # Allows a single node to mount the volume as read-write
+  persistentVolumeReclaimPolicy: Retain # Determines what happens to the volume after its claim is released
+  storageClassName: standard-storage # Name of the StorageClass
+  hostPath:
+    path: "/home/ubuntu/pv-ex" # The path on the host node's filesystem
+
+
+vi pv-ex.yml
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: example-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/home/ubuntu/pv-ex"
+
+
+vi pvc-ex.yml
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: example-pv-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+
+kubectl get pv
+kubectl get pvc
