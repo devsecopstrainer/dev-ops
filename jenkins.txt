@@ -95,4 +95,16 @@ Install plugin - pipeline stage view
 		Install Git on agent:  sudo apt install git -y
 		Install Maven: sudo apt install maven -y
 
+Creating a webhook in GitHub:
+==
+•	To create a webhook manually, navigate to your GitHub repository, click on Settings, and then click on Webhooks.
+•	Click on Add webhook, and provide the Jenkins URL. The Jenkins URL should be in the following format:
+
+ - payload url : http://<jenkins_server>/github-webhook/
+ - Ex: http://65.0.4.88:8080/github-webhook/
+ - content type - application/json
+ - Enable SSL verification
+
+•	Now configure the Jenkins project, Check the GitHub hook trigger button.
+ - tick - GitHub hook trigger for GITScm polling
 
