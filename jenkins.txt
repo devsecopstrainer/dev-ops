@@ -95,16 +95,98 @@ Install plugin - pipeline stage view
 		Install Git on agent:  sudo apt install git -y
 		Install Maven: sudo apt install maven -y
 
-Creating a webhook in GitHub:
-==
-•	To create a webhook manually, navigate to your GitHub repository, click on Settings, and then click on Webhooks.
-•	Click on Add webhook, and provide the Jenkins URL. The Jenkins URL should be in the following format:
+Day-3
+===================
+SonarQube is an open-source platform developed by SonarSource for continuous inspection of code quality. 
+Sonar does static code analysis, which provides a detailed report of bugs, code smells, vulnerabilities, code duplications.
+It supports 30+ major programming languages through built-in rulesets and can also be extended with various plugins.
 
- - payload url : http://<jenkins_server>/github-webhook/
- - Ex: http://65.0.4.88:8080/github-webhook/
- - content type - application/json
- - Enable SSL verification
+Setup:
 
-•	Now configure the Jenkins project, Check the GitHub hook trigger button.
- - tick - GitHub hook trigger for GITScm polling
+Take 3 Ubuntu machines,  
+	Security grp - 
+		Machine			Inbound			Outbound
+		Jenkins Master	22, 8080		all traffic		T3 micro, 10 GB memory.
+		Node-1			22				all traffic		T3 micro, 10 GB memory.
+		SonarQube		22, 9000		all traffic		T2 Medium, 12 gb
+
+Sonar Qube set-up:
+sudo hostnamectl set-hostname sonar
+sudo apt update && sudo apt upgrade -y
+Java is required to run sonarqube.
+sudo apt install openjdk-21-jdk -y
+mkdir sonarqube
+cd sonarqube
+sudo apt install unzip -y
+wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-26.3.0.120487.zip
+unzip sonarqube-26.3.0.120487.zip
+rm -rf sonarqube-26.3.0.120487.zip
+mv sonarqube-26.3.0.120487 sonarqube
+cd sonarqube-26
+pwd: /home/ubuntu/sonarqube/sonarqube-26/bin/linux-x86-64
+Run: ./sonar.sh console
+login to sonar through UI:
+public_ip:9000
+username and password = admin
+
+Create a local project
+Locally
+Analyze "idream-microservice": sqp_4ea1c78e11eb10542a2e519a37d22c40a78f95d4
+
+mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+  -Dsonar.projectKey=idream-microservice \
+  -Dsonar.projectName='idream-microservice' \
+  -Dsonar.host.url=http://13.233.5.205:9000 \
+  -Dsonar.token=sqp_4ea1c78e11eb10542a2e519a37d22c40a78f95d4
+  
+  
+
+Install sonarqube scanner plugin in jenkins
+
+
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('git') {
+            steps {
+                git 'https://github.com/devsecopstrainer/idream-microservice.git'
+            }
+        }
+        stage('Hello') {
+            steps {
+                mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+                -Dsonar.projectKey=idream-microservice \
+                -Dsonar.projectName='idream-microservice' \
+                -Dsonar.host.url=http://13.233.5.205:9000 \
+                -Dsonar.token=sqp_4ea1c78e11eb10542a2e519a37d22c40a78f95d4
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
