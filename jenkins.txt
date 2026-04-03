@@ -177,6 +177,143 @@ pipeline {
 
 
 
+Day-4
+===================
+Nexus: Centralized artifact management.
+
+Take 3 Ubuntu machines,  
+	Security grp - 
+		Machine			Inbound			Outbound
+		Jenkins Master	22, 8080		all traffic		T3 micro, 12 GB memory.
+		Node-1			22				all traffic		T3 micro, 12 GB memory.
+		Nexus		22, 9000		all traffic		T2 Medium, 12 gb
+
+Search for Download Nexus on Google and open the first link
+
+
+
+https://cdn.download.sonatype.com/repository/downloads-prod-group/3/nexus-3.90.1-01-linux-x86_64.tar.gz
+https://cdn.download.sonatype.com/repository/downloads-prod-group/3/nexus-3.90.1-01-linux-aarch_64.tar.gz
+
+
+https://download.sonatype.com/nexus/3/nexus-3.90.2-06-linux-x86_64.tar.gz
+
+
+Change hostname:
+	sudo hostnamectl set-hostname nexus-vm
+Logout and Login Again.
+
+sudo apt update && sudo apt upgrade -y
+go to /opt
+switch to root
+wget https://download.sonatype.com/nexus/3/nexus-3.90.2-06-linux-x86_64.tar.gz
+
+tar -xzvf nexus-3.90.2-06-linux-x86_64.tar.gz
+rm -rf nexus-3.90.2-06-linux-x86_64.tar.gz
+mv nexus-3.90.2-06/ nexus
+
+useradd nexus
+tail -n 5 /etc/passwd
+tail -n 5 /etc/group
+
+Change the ownership of nexus files to the newly created user - nexus
+
+chown -R nexus:nexus /opt/nexus
+chown -R nexus:nexus /opt/sonatype-work/
+ll
+
+Edit nexus.rc file present under bin directory of nexus
+cd nexus/bin/
+
+Create the file: nexus.rc
+add this:
+run_as_user="nexus"
+
+chown -R nexus:nexus nexus.rc
+
+
+go to: /etc/systemd/system
+Create a nexus system unit file to auto start nexus server on startup 
+https://help.sonatype.com/en/run-as-a-service.html
+
+touch nexus.service
+========================
+
+[Unit]
+Description=nexus service
+After=network.target
+
+[Service]
+Type=forking
+LimitNPROC=65536
+LimitNOFILE=65536
+ExecStart=/opt/nexus/bin/nexus start
+ExecStop=/opt/nexus/bin/nexus stop
+
+User=nexus
+Restart=on-abort
+TimeoutSec=600
+
+[Install]
+WantedBy=multi-user.target
+
+============
+
+Add nexus service to boot and start nexus
+sudo systemctl daemon-reload
+sudo systemctl enable nexus.service
+sudo systemctl start nexus.service
+
+go to:
+/opt/sonatype-work/nexus3/log
+tail -f nexus.log
+
+http://13.234.17.138:8081/
+
+user name admin
+pwd: cat /opt/sonatype-work/nexus3/admin.password
+
+===========
+settings > repository > create repository > maven2 hosted
+
+
+Update pom.xml file, add distributionManagement tag
+
+
+<distributionManagement>
+  <repository>
+    <id>nexus</id>
+    <name>testrepo</name>
+    <url>http://13.234.17.138:8081/repository/testrepo/</url>
+  </repository>
+  <snapshotRepository>
+    <id>nexus</id>
+    <name>testrepo</name>
+    <url>http://13.234.17.138:8081/repository/testrepo/</url>
+  </snapshotRepository>
+</distributionManagement>
+
+
+
+In jenkins:
+cd /etc/maven
+sudo vi settings.xml
+
+
+update servers tag:
+
+  <servers>
+
+    <server>
+      <id>nexus</id>
+      <username>admin</username>
+      <password>1q2w3e4r!Q@W#E$R</password>
+    </server>
+
+  </servers>
+
+
+
 
 
 
