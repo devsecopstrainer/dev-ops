@@ -1,0 +1,39 @@
+Jenkins Master Setup
+=====================
+Take one Ubuntu 24.04 instance, T3 Small, 10 GB GP3
+Security Group:
+	Inbound: port 22, 8080
+	Outbound: All Traffic
+
+Change hostname:
+	sudo hostnamectl set-hostname jenkins-master
+Logout and Login Again.
+
+script 
+==========
+
+touch script.sh
+chmod u+x script.sh
+
+vi script.sh
+
+echo "installation starts ..."
+sleep 2
+sudo apt update && sudo apt upgrade -y
+sleep 2
+sudo apt install fontconfig openjdk-21-jre -y
+sleep 2
+sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
+sleep 2
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+sleep 2
+sudo apt update
+sleep 2
+sudo apt install jenkins -y
+sleep 2
+ps -ef | grep jenkins
+sleep 2
+echo -e "installation success, jenkind password below:---> \n"
+sleep 2
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+echo -e ""
