@@ -1,0 +1,29 @@
+
+Worker Setup:
+==============
+Ubuntu 24.04 instance, T3 Small, 10 GB GP3
+
+Change hostname:
+	sudo hostnamectl set-hostname worker-1
+Logout and Login Again.
+apt list openjdk-21*
+
+script for Jenkins Node:
+==========================
+
+touch script.sh
+chmod u+x script.sh
+
+vi script.sh
+
+echo "installation starts ..."
+sleep 2
+sudo apt update && sudo apt upgrade -y
+sleep 2
+sudo apt install openjdk-21-jdk -y
+sleep 2
+sudo apt install git -y
+sleep 2
+sudo apt install maven -y
+echo "installation success"
+
