@@ -1,0 +1,105 @@
+
+Jenkins-Docker-DockerHub Integration:
+=======================================
+
+
+Change hostname:
+	sudo hostnamectl set-hostname nexus-vm
+Logout and Login Again.
+
+script for Node:
+==========================
+
+touch script.sh
+chmod u+x script.sh
+
+vi script.sh
+
+echo "installation starts ..."
+sleep 2
+sudo apt update && sudo apt upgrade -y
+sleep 2
+sudo apt install openjdk-21-jdk -y
+sleep 2
+sudo apt install git -y
+sleep 2
+sudo apt install maven -y
+sleep 2
+# Add Docker's official GPG key:
+sudo apt update
+sleep 2
+sudo apt install ca-certificates curl
+sleep 2
+sudo install -m 0755 -d /etc/apt/keyrings
+sleep 2
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sleep 2
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+sleep 2
+# Add the repository to Apt sources:
+sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+sleep 2
+sudo apt update
+sleep 2
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sleep 2
+sudo systemctl start docker
+sleep 2
+sudo systemctl enable docker
+sleep 2
+sudo usermod -a -G docker ubuntu
+sleep 2
+echo -e "\n Installation success, logout and login again. \n"
+
+
+Jenkins script:
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Git-Clone') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/shaktiranjan2024/abstergo-corp']])
+            }
+        }
+        stage('Mvn-Pkg') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage('Docker-Build') {
+            steps {
+                sh 'pwd'
+                sh 'ls -ltr'
+                sh 'sudo docker build -t saktiranjan/abstergo-corp:latest .'
+            }
+        }
+        stage('Push-Img-To-Docker-Hub') {
+            steps {
+                sh 'sudo docker login -u saktiranjan -p dckr_pat_nZyqtGI49Z3RPxoOem0tn72gJuA'
+                sh 'sudo docker push saktiranjan/abstergo-corp:latest'
+            }
+        }
+        stage('Deploy-On-K8S') {
+            steps {
+                withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'k8s-secret', namespace: '', restrictKubeConfigAccess: false, serverUrl: 'https://192.168.1.17:6443') {
+                   sh 'kubectl delete svc abstergo-corp-svc'
+                   sh 'kubectl delete deployment abstergo-corp-deployment'
+                   sh 'kubectl apply -f k8s-deployment.yml'
+                   sh 'kubectl apply -f k8s-svc.yml'
+                }
+            }
+        }
+    }
+}
+
+
+
