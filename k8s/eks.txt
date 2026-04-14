@@ -1,0 +1,140 @@
+EKS Cluster Setup:
+===========================================================
+
+#1: Launch instance, update and upgrade
+================================
+
+Launch Instance: Ubuntu - T2 Micro, 8GB
+change the hostname:
+	sudo hostnamectl set hostname eks-server
+
+sudo apt update && sudo apt upgrade -y
+
+#2: Setup kubectl
+================================
+
+Download the kubectl binary for your cluster’s Kubernetes version from Amazon S3.
+Documentation: https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html#linux_amd64_kubectl
+
+Kubernetes 1.35:
+
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.35.2/2026-02-27/bin/linux/amd64/kubectl
+
+Apply execute permissions to the binary.
+
+chmod +x ./kubectl
+
+sudo mv ./kubectl /usr/local/bin
+
+kubectl version
+
+#3: Setup AWS CLI
+================================
+
+Install AWS CLI latest version using below commands
+Documentation: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+
+sudo apt install unzip
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+aws --version
+
+#4: Install eksctl
+================================
+
+Install eksctl using below commands
+Documentation: https://docs.aws.amazon.com/eks/latest/eksctl/installation.html
+eksctl is a command line utility to create K8S cluster from AWS CLI.
+
+ARCH=amd64
+PLATFORM=$(uname -s)_$ARCH
+curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
+tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
+sudo mv /tmp/eksctl /usr/local/bin
+eksctl version
+
+#5: Install eksctl
+================================
+Create IAM role & attach to EKS Management Host & Jenkins Server
+IAM > Roles > Create Role > AWS service > Next > 
+IAM Full Access
+VPC Full Access
+EC2 Full Access
+Cloud Formation Full Access
+Administrator Access
+
+create role
+
+attach the role to ec2
+
+select the vm
+Actions > security > modify IAM role
+
+select the role from drop down and update role
+
+
+#5: create k8s cluster
+================================
+eksctl create cluster --name my-cluster --region ap-south-1 --node-type t2.medium  --zones ap-south-1a,ap-south-1b
+eksctl create cluster --name my-cluster --nodes=3 --node-type=t3.medium
+
+
+
+it will take 15 mins
+
+#6: create deployment and svc
+================================
+
+Deployment-ex
+================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-deployment
+  labels:
+    app-name: spring-boot-app
+spec: 
+  replicas: 2
+  selector:
+    matchLabels:
+      app-name: spring-boot-app
+  template:
+    metadata:
+      labels:
+        app-name: spring-boot-app
+    spec:
+      containers:
+        - name: sp-boot-cnt
+          image: devsecopstrainer/spring-boot-app:v1
+          ports:
+            - containerPort: 8080
+
+
+svc example
+==============
+apiVersion: v1
+kind: Service
+metadata:
+    name: spring-boot-svc
+spec:
+    type: LoadBalancer
+    selector:
+        app-name: spring-boot-app
+    ports:
+      - port: 8080
+        targetPort: 8080
+
+
+access via lb:8080
+
+==========
+
+
+delete
+
+
+eksctl delete cluster --name my-cluster --region ap-south-1
+it will take 8 to 10 mins
+
+
