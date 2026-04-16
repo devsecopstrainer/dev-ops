@@ -1,0 +1,108 @@
+jenkins - kubernetes
+====================================
+
+Install kubectl in Jenkins node:
+
+	refer: https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+
+#1. Download kubectl file from:
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin
+kubectl version
+kubectl version --client
+kubectl version --client --output=yaml
+
+
+Update cluster config file in Jenkins Server:
+
+Execute following command on control plane:
+
+cat .kube/config
+
+Output:
+
+ubuntu@control-plane:~$ cat .kube/config
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJWjBrQlJxNlVFVlF3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TmpBME1UWXdNRFEwTVRkYUZ3MHpOakEwTVRNd01EUTVNVGRhTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUUM3cW9KUDR3ZU03K0J6TmhVRlUrUFlYOVlpa0VXbk1WNk1mMFBJMXlOOXRWOTdzVlNZaXhCaU41OE8KYitwQ1FmTkZyeWJ2eENYQ0Vmbk9HYS9sSHREQmwraVlHeEJRRUVFR1dOUlU0Zlp0SlB1dTFWbEZUTVhSS2oyQwpRd3FvWEhaRFFsNFdncGV5NVVWVHhZMVdWcWVidVVZQU10cFUrMm5qREtndEdXV1hVemcrNTJTV01zK1VCRk9wCmNqMGNRSmdoVTk0MXZ4T1ZvSjVuR1JueDR1SDBqczJ5ZE1CdDlSUXl3MmN4TFhybmI1c3IrbTFwTTNER2wyWGsKSVJOY0ZEN2F5TzM3UC9uWUpVRmcrazdaRzVzTCtPbUw0bytWckVacDVnaTNYdEErMXV6NkNDYnpPR01VWFlDdwpOZHZINFppendEUEd2eENCMCtwRnhDUmYxY05KQWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJRN3Jpa0duMi9tN1kvNzgrYllkTWpmZ3JwMjN6QVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQU1OV2JLU216eQpSUGZxL0RBdS9aMExRb2RHVW5xaHNGUnd6bVdVN2tPcXdzMVFPR0xJTnprZW1lN0pGbC9rZ2I2T1BTVlA0L21QCm9MdXpRUmJnV0hwYXo1Z0cvUURicG9DdURqaHI0UC9LcllZbm5aVXRKU2c2Z1QrbDZjY2pBQUJUYTVwZ3pRQmEKd1AxRUF6SzFQdlgyc2E3QlJ2WUJjM3hhR1pVN3dTYnB4cDhyMFIrUG9Cc3FzemtQUzJpNVlJeFdLcmxBNGhNUApKUks2TUtWWHprRFJDNUtPOENWUU1Zb1ZNRS9QKzJJYzVHQmw1YUtIaldIS1Y3MEd3RHJiWE0zNTllaU80aTJQCjFDTmM1TmNYZTVOTmtBemlmZW1lZHFmRThLeWhDenN5eUdmUW0vMndaYnEvbVVNajV6cjNBYVJyMi9oVEYyUkgKZXJqTCtZVmoxSmRlCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+    server: https://172.31.42.136:6443
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+current-context: kubernetes-admin@kubernetes
+kind: Config
+users:
+- name: kubernetes-admin
+  user:
+    client-certificate-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURLVENDQWhHZ0F3SUJBZ0lJWkxaUThMS2ZIUXN3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TmpBME1UWXdNRFEwTVRkYUZ3MHlOekEwTVRZd01EUTVNVGRhTUR3eApIekFkQmdOVkJBb1RGbXQxWW1WaFpHMDZZMngxYzNSbGNpMWhaRzFwYm5NeEdUQVhCZ05WQkFNVEVHdDFZbVZ5CmJtVjBaWE10WVdSdGFXNHdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUFBNElCRHdBd2dnRUtBb0lCQVFDa3VwMHQKV0U1eG45MXdtd2ovVWdIZnpXTDdybGF1czlURUwySFE5bktUZk5yQ3h2U2dzSStNRnVnUzFXOW1pb0dHbkIvbgpHVkZrRkFjM2gvdGYxN0lFWkVkNmJ0dzhTWlJQdkVSNEVWM3NjOWo0WGlrbVFDQlZSVmY0Smtmb3JBS0RKVy9ECkdtUFVHbG1jVmtzYnNHa1lHSG8zQ2tlRWVYU3drWFIwcEx6S3RqVUs3cXhBbUdqUlVkWGg3R1pkMXVHMHQxNUcKbC96aUptanJiL0xzZCtZMlVnWUxaYjJUTUt6YjFvdWN5eGZLYlIwUFRDa3RlMDhBcUtqV0JZcGt6dllhTTJhUQpGc0V4UEF2TUlrK2pwYUpSbXBZVjA0cFlROFc2TGZzQ1BNaFBudCtOeFdmOStaZGlqVnBhcmpTT1J5SGFESm9aCis5elUzakVMb3A4RFpibGpBZ01CQUFHalZqQlVNQTRHQTFVZER3RUIvd1FFQXdJRm9EQVRCZ05WSFNVRUREQUsKQmdnckJnRUZCUWNEQWpBTUJnTlZIUk1CQWY4RUFqQUFNQjhHQTFVZEl3UVlNQmFBRkR1dUtRYWZiK2J0ai92ego1dGgweU4rQ3VuYmZNQTBHQ1NxR1NJYjNEUUVCQ3dVQUE0SUJBUUFmL2hPWmNjU0ZzRTNVTW5kVEppRmVYOVRiCmRmSEk3dXkzM3RlNUo0MUVyckdXWkwvMVdxYkxrWUptb1ZZd00rNjJzeHBPRnBvOGRkaXpvWUdFWWtxMmVDSVUKbU00cVF5MEtPZE4rc08zcERKMDVOYlBzS1BsVTd5VHlkeUVNZisrbndodVR4T0NKU1A4emhzRng0Sk1zSFppQQpOTGhxWmlUQWpzUEprVk4waEowMHJZeVlCUUtqUC9rUXBHN0dDZFRDWkdxcGorQUNpRElDVWRpMVRXcm9nMlJYCldPUy8rVHpmbFpRZ0tjT2hQYVc3WjdEM0p6Zlh5dDZ2NGEySTZ4dGEyTHFrMTdEdE10dFJ0c0V3VGpCQWN6SDAKUFJ5cHhlak5pMTZtdmpRWTl1cy9CQ05xQzVNU0ViM01QL3k2V2Fwb3hDNSs2VmVhTzVOTVMwOEZ2eGVVCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+    client-key-data: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb2dJQkFBS0NBUUVBcExxZExWaE9jWi9kY0pzSS8xSUIzODFpKzY1V3JyUFV4QzloMFBaeWszemF3c2IwCm9MQ1BqQmJvRXRWdlpvcUJocHdmNXhsUlpCUUhONGY3WDlleUJHUkhlbTdjUEVtVVQ3eEVlQkZkN0hQWStGNHAKSmtBZ1ZVVlgrQ1pINkt3Q2d5VnZ3eHBqMUJwWm5GWkxHN0JwR0JoNk53cEhoSGwwc0pGMGRLUzh5clkxQ3U2cwpRSmhvMFZIVjRleG1YZGJodExkZVJwZjg0aVpvNjIveTdIZm1ObElHQzJXOWt6Q3MyOWFMbk1zWHltMGREMHdwCkxYdFBBS2lvMWdXS1pNNzJHak5ta0JiQk1Ud0x6Q0pQbzZXaVVacVdGZE9LV0VQRnVpMzdBanpJVDU3ZmpjVm4KL2ZtWFlvMWFXcTQwamtjaDJneWFHZnZjMU40eEM2S2ZBMlc1WXdJREFRQUJBb0lCQUFEWEZyY1NlcXRGZnpybAoyRk5NSjBMVVB5UEdCZ3lZMnJGMFp0WVJFZEFBUW8rVWxUNmpZOWk0YVRDQXBFeXBvazFFU3k2THZaamJyeGljCjFkU3NtSUJsZklOaytLZkFtV1NlalJTMTFpS2VuMmdwU2h5R2NHcjlraWpNOFM4ZTVCSGFzWDRnSG5Xamkrd1UKclZQbXN6ZnU1K3BBYm5yemZ2WXQ5SmMrMENPeTJZQW4xdEo3bDNneFhqY2lUMWN6eEYwd2xHZkJnUFBQS3dpeAptNjNQaWNxbHVieVNDYjN0Wnc4ZzBTU0J6eUZkajVFZ0dSWlRhZ2dXVXRuRnFoZDVOd0NnblcwcDltR0VjS2NFCkxGRVVJTVNxRnBVaFJYZE5RVEQ2b3hFdVFIUzBPVlh0M3dteEJlUHJFazdWVHFydE5rU3JwM3laT2lrK085R0UKMkFaK1N1a0NnWUVBejZwWEIvVVJJMk43UTZSSUt6bUJHb2Fvb2VtOWlCZG5kZWlITTIzTnVCV3oxcHJzTm5seApSNEJiVXFUNHNuZGY5UHZTQ055RmVibE43Qit5ZmN3SGlvcVJ5L3VJU1VldkhRYWVpeEhVam4zbmRKUEJXMFJMCkcrVUxiZDZPeVYvVTh6ajQycE95T0MwekVuM0xzbnd2cmtqWHY3QmJXUFFsNmFBa3VGbmcxcmNDZ1lFQXl4SHMKZ2JicWs5UnMxeXZpSzlwelFYMmI4OEVPUUM3WjJrYURmOVd2NDQ2bjRUUVhSK1ZIUy9nTU5DVjNBaVhFcUQ4Tgpqckg2MndzTE5pUFFUNnVvZnp6MEJ0VUMxcUVkYTJnOFhTdUNmc1loMXVtNVluZ1IzeXFPZ0ZYRUd6NE56aitqCmtSVkd3UFdEbDgraHBFcEx4NE5EeFBWZkpnMFlpOGYzTmpRblpyVUNnWUFWNjc5QUljaHJXZWI3SHU1WFVieWwKRmkzYTJaZWVOQXBCMGdmamorVzFWdVVpOUR1WERINitzM2Z3WTJXMVFSQ3FCYU1JT0c4R2lGOEhXOWsxbWtINQpoK01ZQ3pjNXRRMXhITy9EY21Cam9qcTZmWlpka2ZuenVkdlkvek5IWW94U0dHTjhmemJDNDFLTzB5U2JkS3g3CjAwaWkvWFRIRVE2bmVMWW5sNlU2UlFLQmdGTUIxNkJLU2ViMXJTdmpWMGMvdTE4bzNpZXNZWXZnMnRJN2dxTXQKa1FFK25lY1RhUFROaHZCSnk0dEJTVDFLZlBHZEhJaVl2Z2J0bzc2VXN5RHQ5U2xWbkJaeTJmOHJ5cC9OOHViTwowei9JODZvcXpjbXZkUGE1S1pqUjlpQ0FwQm9McjJ1dHU4ZENWSEVvd1ZVcnZZQW5hdnRHcFljalVVWktEZ1pOCkdWSUZBb0dBTmUzMnVCOGFIdFQ5akk0emx4WU9PVTNkaUFPSFlOcUZuUmptT25rUzJiSWhsYlByaXBTNk1VUnEKSFc2NlN1ZmJEN0NSTnNlMkdVdjJlVjRPYkpvdGljQ0pHaWNzRlJxUDM1WFlQM2VUMDhVRC9HMVorZHhKOWV6Vgp3aG80cktZMGVhZnpUbjhmQVVjankvYnExMktrbmF3WUtwdnExbnVtSEplZkliL3R6ZjQ9Ci0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg==
+ubuntu@control-plane:~$
+
+
+in jenkins slave:
+create a folder in ubuntu home dir:
+mkdir .kube
+cd .kube
+
+ubuntu@node-1:~/.kube$ pwd
+/home/ubuntu/.kube
+ubuntu@node-1:~/.kube$
+
+touch config
+
+vi config
+
+Add the config file details from kubernetes to jenkins worker node.
+
+now in jenkins node, access kubectl commands:
+
+kubectl get nodes
+
+
+=====================
+final jenkins cicd script:
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Git-Clone') {
+            steps {
+                git 'https://github.com/devsecopstrainer/idream-microservice.git'
+            }
+        }
+        stage('Mvn-Pkg') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage('Docker-Build') {
+            steps {
+                sh 'docker build -t devsecopstrainer/spring-boot-app:latest .'
+            }
+        }
+        stage('Push-Img-To-Docker-Hub') {
+            steps {
+                sh 'docker push devsecopstrainer/spring-boot-app:latest'
+            }
+        }
+        stage('Deploy-On-K8S') {
+            steps {
+                sh 'kubectl apply -f deployment-ms.yml'
+                sh 'kubectl apply -f svc-ms.yml'
+            }
+        }
+    }
+}
+
+
+
+
+
+
