@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Git-Clone') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+        stage('Mvn-Pkg') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+        stage('Docker-Build') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+        stage('Push-Img-To-Docker-Hub') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+        stage('Deploy-On-K8S') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+    }
+}
+
