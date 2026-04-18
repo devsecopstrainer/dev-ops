@@ -12,5 +12,10 @@ pipeline {
                 echo 'mvn build'
             }
         }
+        stage('stage-3') {
+            steps {
+                echo 'nexus upload'
+            }
+        }
     }
 }
