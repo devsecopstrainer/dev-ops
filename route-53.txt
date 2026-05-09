@@ -1,0 +1,12 @@
+Route 53: 
+	Translates domain names into IP addresses.
+	www.google.com is FQDN, .com is TLD 
+1. Launch EC2 instance with public IP.
+2. In Route 53 -> Create Hosted Zone
+3. In GoDaddy -> Change Nameservers.
+4. Copy all 4 NS from AWS to Go Daddy.
+5. In Route 53 -> create record 
+	Record Name : www
+	Record Type: A - Routes traffic to IPV4.
+	Value: Public IP
+	Routing Policy - Simple Routing
