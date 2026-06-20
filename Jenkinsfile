@@ -2,9 +2,6 @@ pipeline {
     agent {
         label 'ms'
     }
-    parameters {
-        string(name: 'IMAGE_VERSION', defaultValue: '1.0.0', description: 'Docker image version')
-    }
     stages {
         stage('git clone') {
             steps {
@@ -21,7 +18,7 @@ pipeline {
                 sh 'pwd'
                 sh 'ls -ltr'
                 sh 'echo ${BUILD_NUMBER}'
-                sh "docker build -t student-service:${params.IMAGE_VERSION} ."
+                sh "docker build -t student-service:${BUILD_NUMBER} ."
             }
         }
     }
