@@ -1,5 +1,4 @@
 
-
 Installing kubeadm:
 ============================================================
  - Take 3 Amazon Machine Images : Ubuntu Server 24.04 LTS (HVM) on the same VPC
@@ -21,9 +20,12 @@ Add following contents to it and execute the script.
 
 touch script.sh
 chmod u+x script.sh
-vi script.sh
+cat > script.sh
 
-echo "control-plane Script Starts here ..."
+#!/bin/bash
+# System update
+sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y
+echo "containerd installation..."
 sudo swapoff -a
 sleep 2
 echo "net.ipv4.ip_forward = 1" | sudo tee /etc/sysctl.d/k8s.conf
@@ -53,6 +55,7 @@ sudo systemctl enable containerd
 sleep 2
 sudo apt-get update
 sleep 2
+echo "K8S installation..."
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg
 sleep 2
 sudo apt-get update
@@ -76,17 +79,9 @@ kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.31.0/
 sleep 2
 echo "*------- Control Plane setup Sucess -------*"
 
-==========================================
+======================================
 ./script.sh
-==========================================
-
-For Flannel, Use:
-kubeadm init --pod-network-cidr=10.244.0.0/16
-
-For Calico, Use:
-kubeadm init --pod-network-cidr=192.168.0.0/16
-
-=======================================
+======================================
 node-1 / node-2 setup:
 ======================================
 1. change host name:
@@ -101,8 +96,11 @@ add following contents to it and execute the script.
 
 touch script.sh
 chmod u+x script.sh
-vi script.sh
+cat > script.sh
 
+#!/bin/bash
+# System update
+sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y
 echo "NODE Script Starts here ..."
 sudo swapoff -a
 sleep 2
@@ -156,3 +154,9 @@ echo "**** SUCCESS - END NODE *****"
  - execute this in control-plane
 	kubeadm token create --print-join-command
 
+Copy the out put and execute in nodes with sudo access.
+===========================================
+
+Check nodes:
+	kubectl get nodes
+	kubectl get nodes -o wide
