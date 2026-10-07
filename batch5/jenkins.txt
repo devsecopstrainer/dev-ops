@@ -24,3 +24,58 @@ sudo systemctl status jenkins
 Security Group: jenkins-sg
 	Inbound rule: port 22, 8080
 	Outbound rule: All traffic
+
+
+
+
+7th Oct
+================
+pipeline {
+    agent any
+    stages {
+        stage('git-clone') {
+            steps {
+                git branch: 'main', url: 'https://github.com/devsecopstrainer/idream-ms.git'
+            }
+        }
+        stage('mvn-build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage('sonar-scan') {
+            steps {
+                echo "SAST success"
+            }
+        }
+        stage('quality gate') {
+            steps {
+                echo "quality gate check success"
+            }
+        }
+        stage('nexus-upload') {
+            steps {
+                //sh 'mvn deploy'
+                 echo "nexus-upload success"
+            }
+        }
+        stage('docker-img') {
+            steps {
+                 sh 'sudo docker build -t img1:v1 .'
+            }
+        }
+    }
+}
+
+
+1. GitHub Clone
+2. Build
+3. SAST
+4. SAST Pass or fail?
+5. Nexus Upload
+6. Docker Image Build
+To Do:
+7. Trivy Scan
+8. Upload to Docker Hub
+9. Deploy in K8S
+
