@@ -79,3 +79,74 @@ To Do:
 8. Upload to Docker Hub
 9. Deploy in K8S
 
+
+complete ci
+=======================================
+pipeline {
+    agent any
+    environment {
+        DOCKER_IMAGE = "devsecopstrainer/idream-ms"
+        IMAGE_TAG    = "${BUILD_NUMBER}"
+        IMAGE_NAME   = "${DOCKER_IMAGE}:${IMAGE_TAG}"
+    }
+    stages {
+        stage('git-clone') {
+            steps {
+                git branch: 'main', url: 'https://github.com/devsecopstrainer/idream-ms.git'
+            }
+        }
+        stage('mvn-build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage('sonar-scan') {
+            steps {
+					sh """
+						${SCANNER_HOME}/bin/sonar-scanner \\
+						-Dsonar.projectKey=idream-ms \\
+						-Dsonar.projectName=idream-ms \\
+						-Dsonar.sources=src \\
+						-Dsonar.java.binaries=target/classes
+					"""
+            }
+        }
+        stage('quality gate') {
+            steps {
+				timeout(time: 3, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+        stage('nexus-upload') {
+            steps {
+                sh 'mvn deploy'
+                // echo "nexus-upload success"
+            }
+        }
+        stage('docker-img') {
+            steps {
+                 sh 'sudo docker build -t $IMAGE_NAME .'
+            }
+        }
+        stage('image-scan') {
+            steps {
+                 echo "image-scan success"
+				 sh 'sudo TMPDIR=/data/trivy-tmp trivy image \
+				 --severity HIGH,CRITICAL \
+				 --exit-code 1 \
+				 --cache-dir /data/trivy-cache \
+				 --output /data/trivy-report.txt $IMAGE_NAME'
+            }
+        }
+        stage('image-upload') {
+            steps {
+                 sh 'sudo docker push $IMAGE_NAME'
+            }
+        }
+    }
+}
+
+
+
+
